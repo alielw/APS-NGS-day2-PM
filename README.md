@@ -78,7 +78,7 @@ Extract read counts with htseq.
 
         samtools view -H file.bam | head
 
-* Htseq-count takes a couple of hours to run, so lets just submit one job to ShARC as practice (96I). You can run this in interactive mode. Remember to specify with -r whether the bam file is sorted by read name (name) or alignnment position (pos)
+* Htseq-count takes a couple of hours to run, so lets just submit one job to ShARC as practice (96I). You can run this in interactive mode. Remember to specify with -r whether the bam file is sorted by read name (`name`) or alignnment position (`pos`)
 
         qrsh
         
@@ -96,11 +96,15 @@ Extract read counts with htseq.
 
         cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts /fastdata/$USER/DE/
         
-* The downstream analyses we will perform next in R on the desktop. Copy the read count folder onto your desktop.
+* We need to merge the read counts across samples so we have one file with all the read counts.
+
+        python script.py merged_readcounts.txt
+        
+* The downstream analyses we will perform next in R on the desktop. Copy the merged read count file onto your desktop.
 
         cd Desktop
 
-        scp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts .
+        scp /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts/merged_readcounts.txt .
 
 ## 2. Normalisation of gene expression
 
