@@ -100,7 +100,7 @@ Extract read counts with htseq.
 
         python script.py merged_readcounts.txt
         
-* The downstream analyses we will perform next in R on the desktop. Copy the merged read count file onto your desktop.
+* The downstream analyses we will perform next in R on the desktop. Copy the merged read count file onto your desktop. You need to open a new terminal window to do this.
 
         cd Desktop
 
