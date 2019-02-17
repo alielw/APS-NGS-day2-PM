@@ -106,10 +106,91 @@ Extract read counts with htseq.
 
         scp /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts/merged_readcounts.txt .
 
-## 2. Normalisation of gene expression
+---
 
+## 2.Introduction to EdgeR
 
+We will use EdgeR for the next analyses ... in R
 
-## 3. Identify differentially expressed genes
+        data <- read.table("~/Desktop/merged_readcounts.txt",stringsAsFactors=F,header=T, row.names=1)
+
+        names(data)
+
+        dim(data)
+        
+Need to specify conditions. Include a table of samples names and id.
+
+        conditions <- factor(c("APLFG","APLFG","APLFG","APLFG","APLFG","APLMG","APLMG","APLMG"))
+
+Object
+
+        expr <- DGEList(counts=data,group=conditions)
+        
+        $samples
+
+---
+
+## 3.Filter expression data
+
+Explain cpm
+
+        cpm_data <- cpm(expr)
+
+Filter expression, at least 1 cpm in either sample. Recommended by EdgeR. Dont exclude sample-limited genes.
+
+        keep <- rowSums(cpm(expr)>1) >=1
+        expr_filtered <- expr[keep,,keep.lib.sizes=FALSE]
+        dim(expr_filtered)
+
+## 4. Normalisation of gene expression
+
+Explain how cpm accounts for differences in library size.
+
+RPKM accounts for differences in gene length
+
+TMM for cross species differences in GC content etc
+
+expr_norm = normalise(expr, conditions, species_name)
+
+---
+
+## 5. Identify differentially expressed genes
+
+#Estimating dispersions
+expr_norm <- estimateCommonDisp(expr_norm)
+expr_norm <- estimateTagwiseDisp(expr_norm)
+
+levels(expr_norm $samples$group)
+
+et <- exactTest(object, pair=c(A,B))
+print(et$comparison)
+
+#Correction for multiple testing
+p <- et$table$PValue
+p_FDR <- p.adjust(p, method = c("fdr"), n = length(p))
+print(length(p_FDR))
+
+table_de <- et$table
+table_de$Padj <- p_FDR
+
+print("p<0.05")
+print(length(which(table_de$Padj < 0.05)))
+print("Male-biased-pvalue&fc")
+print(length(which(table_de$Padj < 0.05 & table_de$logFC > 1)))
+print("Male-biased-fc")
+print(length(which(table_de$logFC > 1)))
+print("Female-biased-pvalue&fc")
+print(length(which(table_de$Padj < 0.05 & table_de$logFC < -1)))
+print("Female-biased-fc")
+print(length(which(table_de$logFC < -1)))
+	
+filename = paste("~/Desktop/Sex-bias-fdr",A,B,name, sep="-")
+print(filename)
+write.table(table_de, file=filename,quote=F, sep="\t")
+}
+
+---
 
 ## 4. Visualisation of gene expression
+
+---
