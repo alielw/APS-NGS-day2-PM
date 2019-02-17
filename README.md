@@ -2,7 +2,7 @@
 *Department of Animal and Plant Sciences, University of Sheffield*
 
 # Differential gene expression analyses
-#### Alison Wright
+#### Alison Wright, Nicola Nadeau, Victor Soria-Carrasco
 
 The aim of this practical is to learn how to perform differential gene expression analyses. We will be using a dataset of expression data for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions. Samples are labelled I or A. I is the part of the wing that is iridescent, A is the top part of the wing, which is called the androchonial region.
 
