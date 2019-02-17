@@ -31,7 +31,7 @@ Remember you can check your current working directory anytime with the command `
 It should show something like:
 
         pwd
-        /fastdata/myuser/DE
+        /fastdata/$USER/DE
 
 ---
 
@@ -104,7 +104,7 @@ Extract read counts with htseq.
 
         cd Desktop
 
-        scp /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts/merged_readcounts.txt .
+        scp $USER@sharc.shef.ac.uk:/usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts/merged_readcounts.txt .
 
 ---
 
