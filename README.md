@@ -4,7 +4,7 @@
 # Differential gene expression analyses
 #### Alison Wright
 
-The aim of this practical is to learn how to perform differential gene expression analyses. We will be using a dataset of expression data for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions.
+The aim of this practical is to learn how to perform differential gene expression analyses. We will be using a dataset of expression data for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions. Samples are labelled I or A. I is the part of the wing that is iridescent, A is the top part of the wing, which is called the androchonial region.
 
 ## Table of contents 
 
@@ -74,9 +74,9 @@ Extract read counts with htseq.
 
         cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/Tophat_output /fastdata/$USER/DE
 
-* Check that the BAM files are sorted, and if so are they sorted by read name or by alignment position. You only need to check a handful.
+* Check that the BAM files are sorted, and if so whether they are sorted by read name or by alignment position. You only need to check one file (96I).
 
-        samtools view -H file.bam | head
+        samtools view -H 96I.bam | head
 
 * Htseq-count takes a couple of hours to run, so lets just submit one job to ShARC as practice (96I). You can run this in interactive mode. Remember to specify with -r whether the bam file is sorted by read name (`name`) or alignnment position (`pos`)
 
@@ -88,7 +88,7 @@ Extract read counts with htseq.
 
         htseq-count -f BAM 96I.bam /fastdata/$USER/align/Cufflinks_output -r [name/pos] > 96I.htseq 
 
-* We have already generated read count files for all the samples for you. There should be 8 files, one for each sample.
+* We have already generated read count files for all the samples. There should be 8 files, one for each sample.
 
         /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts
         
@@ -96,7 +96,7 @@ Extract read counts with htseq.
 
         cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts /fastdata/$USER/DE/
         
-* We need to merge the read counts across samples so we have one file with all the read counts.
+* We need to merge the read counts across samples so we have one file with all the read counts. You can do this using a custom python script 
 
         python script.py merged_readcounts.txt
         
