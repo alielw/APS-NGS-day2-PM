@@ -16,9 +16,9 @@ The aim of this practical is to learn how to perform differential gene expressio
 
 4. Normalisation of gene expression
 
-3. Identify differentially expressed genes
+5. Visualisation of gene expression
 
-4. Visualisation of gene expression
+6. Identify differentially expressed genes
 
 ---
 
