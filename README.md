@@ -142,15 +142,15 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
 
         conditions <- factor(c("I","A","I","I","A","A","A","I"))
 
-* [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) stores data in a simple list-based data object called a DGEList. This type of object is easy to use because it can be manipulated like any list in R. The function readDGE makes a DGEList object directly. If the table of counts is already available as a matrix or a data.frame, x say, then a DGEList object can be made by:
+* [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) stores data in a simple list-based data object called a `DGEList`. This type of object is easy to use because it can be manipulated like any list in R. The function readDGE makes a DGEList object directly. If the table of counts is already available as a matrix or a data.frame, x say, then a DGEList object can be made by:
 
         expr <- DGEList(counts=data)
 
 We can add conditions at the same time:
 	
 	expr <- DGEList(counts=data, group=conditions)
-        
-        expr$samples
+	
+	expr$samples
 
 ---
 
@@ -158,9 +158,9 @@ We can add conditions at the same time:
 
 Genes with very low counts across all samples provide little evidence for differential expression. In the biological point of view, a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important. Therefore, we need to filter genes with biologically irrelevant expression. 
 
-The developers of edgeR recommend that gene is required to have a count of 5-10 in a library to be considered expressed in that library. However, users should filter with count-per-million (CPM) rather than filtering on the read counts directly, as the latter does not account for differences in library sizes between samples. Therefore, they recommend filtering on a CPM of 1.
+The developers of edgeR recommend that gene is required to have a count of 5-10 in a library to be considered expressed in that library. However, users should filter with count-per-million (`CPM`) rather than filtering on the read counts directly, as the latter does not account for differences in library sizes between samples. Therefore, they recommend filtering on a CPM of 1.
 
-We can calculate count-per-million (CPM) using cpm(DGEList).
+We can calculate count-per-million (`CPM`) using cpm(`DGEList`).
 
         cpm_data <- cpm(expr)
 
@@ -245,17 +245,17 @@ Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) 
 
 Normally, we use a fdr p-value threshold < 0.05. It is also important to consider imposing a fold change threshold eg logFC of 1. As we conducted `exactTest(expr, pair=c("A","I"))`, positive logFC means I > A (I-biased), negative logFC means A > I (A-biased).
 
-I-biased
+	I-biased genes
 
-	print(length(which(table_de$Padj < 0.05 & table_de$logFC > 1)))
+		print(length(which(table_de$Padj < 0.05 & table_de$logFC > 1)))
 	
-	table_de[which(table_de$Padj < 0.05 & table_de$logFC > 1),]
+		table_de[which(table_de$Padj < 0.05 & table_de$logFC > 1),]
 
-A-biased
+	A-biased genes
 	
-	print(length(which(table_de$Padj < 0.05 & table_de$logFC < -1)))
+		print(length(which(table_de$Padj < 0.05 & table_de$logFC < -1)))
 	
-	table_de[which(table_de$Padj < 0.05 & table_de$logFC < -1),]
+		table_de[which(table_de$Padj < 0.05 & table_de$logFC < -1),]
 	
 * Lets look up and check whether any of these differentially expressed genes are annotated, and find out gene features. A note of caution here, the *Heliconius melpomene* is not well annotated relative to genomes of model species.
 
