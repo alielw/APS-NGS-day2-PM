@@ -42,7 +42,7 @@ Discussion of different measures of gene expression: RPKM,FPKM,CPM. Need read co
 **Cufflinks output files: isoforms.fpkm_tracking & genes.fpkm_tracking**
 Cufflinks generates files that contain the estimated isoform or gene-level expression values as Fragments Per Kilobase of exon model per Million mapped fragments (FPKM). It is possible to use this FPKM information for an initial assessment of gene expression but expression analyses may require further processing of this data (eg normalisation). Therefore, we do not recommend conducting analyses on these raw FPKM values.
 
-Instead, we can use [HTSeq](https://htseq.readthedocs.io/en/release_0.11.1/) to extract read counts for downstream analyses.
+Instead, we can use [HTSeq](https://htseq.readthedocs.io/en/release_0.11.1/) to extract read counts for each gene for downstream analyses.
 
 * **Sort BAM files with [Samtools](http://www.htslib.org/doc/samtools-1.0.html).**
 
@@ -68,37 +68,45 @@ htseq-count outputs a table with counts for each feature, followed by the specia
 
 ## a. PRACTICAL ACTIVITY
 
-Extract read counts with htseq.
+Extract read counts with htseq-count(https://htseq.readthedocs.io/en/release_0.11.1/count.html) for each gene.
 
-* First, copy the folder containing the BAM files for our 8 samples (4 individuals, 2 samples per individual) to your fastdata
+* Htseq-count takes a couple of hours to run, so lets just focus on one individual (96I). Check that the BAM file for this individual is already located in your fastdata folder.
 
-        cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/Tophat_output /fastdata/$USER/DE
-
-* Check that the BAM files are sorted, and if so whether they are sorted by read name or by alignment position. You only need to check one file (96I).
+        cd /fastdata/$USER/align/Quality_assessment
+        
+        ls 
+	
+* Check that the BAM file is sorted, and if so whether it is sorted by read name or by alignment position. You need to know this for htseq-count.
+        
+       	qrsh 
+        
+        source /usr/local/extras/Genomics/.bashrc
 
         samtools view -H 96I.bam | head
 
-* Htseq-count takes a couple of hours to run, so lets just submit one job to ShARC as practice (96I). You can run this in interactive mode. Remember to specify with -r whether the bam file is sorted by read name (`name`) or alignnment position (`pos`)
-
-        qrsh
+* Use htseq-count to extract read counts. You can run this in interactive mode. Remember to specify with -r whether the BAM file is sorted by read name (`name`) or alignnment position (`pos`). This command may take a while to finish so move onto the next session.
         
-        source /usr/local/extras/Genomics/.bashrc
-        
-        cd /fastdata/$USER/DE/Tophat_output
+        source activate htseq
 
-        htseq-count -f BAM 96I.bam /fastdata/$USER/align/Cufflinks_output -r [name/pos] > 96I.htseq 
+        htseq-count -f bam 96I.bam /fastdata/$USER/align/Cufflinks_output/merged_asm/merged.gtf -r [name/pos] > 96I.htseq 
 
-* We have already generated read count files for all the samples. There should be 8 files, one for each sample.
-
+* It is not feasible to run htseq-count on all our samples in the practical due to time contains. We have already generated read count files for all the samples. There should be 8 files, one for each sample.
+	
         /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts
         
 * Copy the read count folder into your fastdata folder.
 
-        cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts /fastdata/$USER/DE/
-        
-* We need to merge the read counts across samples so we have one file with all the read counts. You can do this using a custom python script 
+        cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts /fastdata/$USER/DE/htseqCounts
 
-        python script.py merged_readcounts.txt
+        cd /fastdata/$USER/DE/htseqCounts
+        
+* We need to merge the read counts across samples into one file. You can do this using a custom python script. 
+
+        python /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/scripts/merge_counts.py merged_readcounts.txt
+	
+* How many genes are there? You can count this with Unix (`wc -l`). Remember Htseq-count calculates read counts for each gene by merging across transcripts.
+
+        wc -l merged_readcounts.txt
         
 * The downstream analyses we will perform next in R on the desktop. Copy the merged read count file onto your desktop. You need to open a new terminal window to do this.
 
