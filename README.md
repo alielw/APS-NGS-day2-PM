@@ -132,6 +132,8 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
 
 * Lets read in the data to R.
 
+        library(edgeR)
+
         data <- read.table("~/Desktop/htseq.merged.txt",stringsAsFactors=F,header=T, row.names=1)
 
         names(data)
@@ -187,19 +189,43 @@ The second most important technical influence on differential expression is one 
 
 Variation in RNA composition can be accounted for by the calcNormFactors function. This normalizes for RNA composition by finding a set of scaling factors for the library sizes that minimize the log-fold changes between the samples for most genes. The default method for computing these scale factors uses a trimmed mean of M- values (TMM) between each pair of samples. Further information can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
 
-	expr_norm = normalise(expr, conditions)
+	expr_norm = calcNormFactors(expr_filtered)
 
 ---
 
 ## 5. Visualisation of gene expression
 
+There are a number of ways to visualise gene expression data. Heatmaps and PCA plots are widely used approaches. We will cover heatmaps today as Day 3 will explore PCA plots.
+
 ## d. PRACTICAL ACTIVITY
+
+* Calculate log CPM
+
+        cpm_log <- cpm(expr_filtered, log = TRUE)
+	
+* Perform clustering of expression
+
+        library(pvclust)
+
+        bootstraps = pvclust(cpm_log, method.hclust="average", method.dist="euclidean")
+
+        plot(bootstraps)
+
+How do the samples cluster? What can you conclude about the genomic architecture of wing iridescence? Is it likely that many or a few genes encode this phenotype?
+	
+* Plot heatmap
+
+        library(pheatmap)
+
+        palette2 <-colorRamps::"matlab.like2"(n=200)
+
+        pheatmap(cpm_log, show_colnames=T, show_rownames=F, color = palette2,clustering_distance_cols = "euclidean", clustering_method="average") 
 
 ---
 
 ## 6. Identify differentially expressed genes in a pairwise comparison
 
-Next we can use edgeR to identify differentially expressed genes between two treatments or conditions. We have a pairwise comparison between two groups. Further information about each step can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
+Next we can use edgeR to identify differentially expressed genes between two treatments or conditions. We have a pairwise comparison between two groups. Further information about each step can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf). You can also refer for the approach that is appropriate if you have more than two treatments. 
 
 Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) method for experiments with single factor. The qCML method calculates the likelihood by conditioning on the total counts for each tag, and uses pseudo counts after adjusting for library sizes. The edgeR functions `estimateCommonDisp` and `exactTest` produce a pseudo counts. We can then proceed with determining differential expression using the `exactTest` function. The exact test is based on the qCML methods. We can compute exact p-values by summing over all sums of counts that have a probability less than the probability under the null hypothesis of the observed sum of counts. The exact test for the negative binomial distribution has strong parallels with Fisher’s exact test.
 
@@ -207,17 +233,17 @@ Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) 
 
 * Estimating common dispersion.
 
-        expr<- estimateCommonDisp(expr)
+        expr_filtered<- estimateCommonDisp(expr_filtered)
 
 * Estimating tagwise dispersion.
 
-        expr<- estimateCommonDisp(expr)
+        expr_filtered<- estimateCommonDisp(expr_filtered)
 
-        levels(expr $samples$group)
+        levels(expr_filtered$samples$group)
 
 * Exact test to calculate logFC, logCPM and PValue for every gene.
 
-        et <- exactTest(expr, pair=c("A","I"))
+        et <- exactTest(expr_filtered, pair=c("A","I"))
 
         et
 
@@ -261,15 +287,15 @@ Normally, we use a fdr p-value threshold < 0.05. It is also important to conside
 
 	First, look up the gene in the gtf file to identify its annotated gene name. eg
 	
-		grep "XLOC_004209" /fastdata/bo1aewr/align/Cufflinks_output/merged_asm/merged_allstranded.gtf
+		grep "XLOC_010550" /fastdata/bo1aewr/align/Cufflinks_output/merged_asm/merged_allstranded.gtf
 	
 	Then find the Ensembl gene id. This specified in the `oId` flag and starts with HMEL... eg
 	
-		HMEL036870g1.t1
+		HMEL031499g1.t1
 	
 	Look up the gene id in [Lepbase](http://ensembl.lepbase.org/Heliconius_melpomene_melpomene_hmel2/Info/Index). You need to drop the transcript info from the gene name eg
 		
-		HMEL036870g1
+		HMEL031499g1
 	
 	What information can you find out about the gene? Does it have any orthologs and if so can you infer the function of this gene?
 	
