@@ -142,9 +142,13 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
 
         conditions <- factor(c("I","A","I","I","A","A","A","I"))
 
-* edgeR stores data in a simple list-based data object called a DGEList. This type of object is easy to use because it can be manipulated like any list in R. The function readDGE makes a DGEList object directly. If the table of counts is already available as a matrix or a data.frame, x say, then a DGEList object can be made by
+* [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) stores data in a simple list-based data object called a DGEList. This type of object is easy to use because it can be manipulated like any list in R. The function readDGE makes a DGEList object directly. If the table of counts is already available as a matrix or a data.frame, x say, then a DGEList object can be made by:
 
-        expr <- DGEList(counts=data,group=conditions)
+        expr <- DGEList(counts=data)
+
+We can add conditions at the same time:
+	
+	expr <- DGEList(counts=data, group=conditions)
         
         expr$samples
 
@@ -152,65 +156,121 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
 
 ## 3.Filter expression data
 
-Explain cpm
+Genes with very low counts across all samples provide little evidence for differential expression. In the biological point of view, a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important. Therefore, we need to filter genes with biologically irrelevant expression. 
+
+The developers of edgeR recommend that gene is required to have a count of 5-10 in a library to be considered expressed in that library. However, users should filter with count-per-million (CPM) rather than filtering on the read counts directly, as the latter does not account for differences in library sizes between samples. Therefore, they recommend filtering on a CPM of 1.
+
+We can calculate count-per-million (CPM) using cpm(DGEList).
 
         cpm_data <- cpm(expr)
 
-Filter expression, at least 1 cpm in either sample. Recommended by EdgeR. Dont exclude sample-limited genes.
+## c. PRACTICAL ACTIVITY
 
-        keep <- rowSums(cpm(expr)>1) >=1
+* Filter expression to remove lowly expressed genes. We do not want to exclude genes specific to one wing region (ie I or A-limited genes). Therefore, a sensible filtering approach is to filter genes that are not expressed > 1 CPM in at least half of the samples. We have 8 samples.
+
+        keep <- rowSums(cpm(expr)>1) >=4
         expr_filtered <- expr[keep,,keep.lib.sizes=FALSE]
+
+* How many genes remain? Does this seem a sensible number of expressed genes? There are 12,669 annotated genes in the *Heliconius melpomene* reference. 
+
         dim(expr_filtered)
 
 ## 4. Normalisation of gene expression
 
-Explain how cpm accounts for differences in library size.
+We need to normalise gene expression across samples before conducting differential gene expression analyses. There are a number of sources of variation we need to account for.
 
-RPKM accounts for differences in gene length
+* **Sequencing depth**
+The most obvious technical factor that affects the read counts, other than gene expression levels, is the sequencing depth of each sample. edgeR controls for varying sequencing depths as represented by differing library sizes. This is part of the basic modeling procedure and flows automatically into downstream statistical analyses. It doesn’t require any user intervention.
 
-TMM for cross species differences in GC content etc
+* **RNA composition**
+The second most important technical influence on differential expression is one that is RNA composition. RNA-seq provides a measure of the relative abundance of each gene in each RNA sample, but does not provide any measure of the total RNA output on a per-cell basis. This commonly becomes important when a small number of genes are very highly expressed in one sample, but not in another. The highly expressed genes can consume a substantial proportion of the total library size, causing the remaining genes to be under-sampled in that sample. Unless this RNA composition effect is adjusted for, the remaining genes may falsely appear to be down-regulated in that sample. This is normally a problem for cross-species comparisons. 
 
-expr_norm = normalise(expr, conditions, species_name)
+Variation in RNA composition can be accounted for by the calcNormFactors function. This normalizes for RNA composition by finding a set of scaling factors for the library sizes that minimize the log-fold changes between the samples for most genes. The default method for computing these scale factors uses a trimmed mean of M- values (TMM) between each pair of samples. Further information can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
+
+	expr_norm = normalise(expr, conditions)
 
 ---
 
-## 5. Identify differentially expressed genes
+## 5. Visualisation of gene expression
 
-#Estimating dispersions
-expr_norm <- estimateCommonDisp(expr_norm)
-expr_norm <- estimateTagwiseDisp(expr_norm)
+## d. PRACTICAL ACTIVITY
 
-levels(expr_norm $samples$group)
+---
 
-et <- exactTest(object, pair=c(A,B))
-print(et$comparison)
+## 6. Identify differentially expressed genes in a pairwise comparison
 
-#Correction for multiple testing
-p <- et$table$PValue
-p_FDR <- p.adjust(p, method = c("fdr"), n = length(p))
-print(length(p_FDR))
+Next we can use edgeR to identify differentially expressed genes between two treatments or conditions. We have a pairwise comparison between two groups. Further information about each step can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
 
-table_de <- et$table
-table_de$Padj <- p_FDR
+Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) method for experiments with single factor. The qCML method calculates the likelihood by conditioning on the total counts for each tag, and uses pseudo counts after adjusting for library sizes. The edgeR functions `estimateCommonDisp` and `exactTest` produce a pseudo counts. We can then proceed with determining differential expression using the `exactTest` function. The exact test is based on the qCML methods. We can compute exact p-values by summing over all sums of counts that have a probability less than the probability under the null hypothesis of the observed sum of counts. The exact test for the negative binomial distribution has strong parallels with Fisher’s exact test.
 
-print("p<0.05")
-print(length(which(table_de$Padj < 0.05)))
-print("Male-biased-pvalue&fc")
-print(length(which(table_de$Padj < 0.05 & table_de$logFC > 1)))
-print("Male-biased-fc")
-print(length(which(table_de$logFC > 1)))
-print("Female-biased-pvalue&fc")
-print(length(which(table_de$Padj < 0.05 & table_de$logFC < -1)))
-print("Female-biased-fc")
-print(length(which(table_de$logFC < -1)))
+## e. PRACTICAL ACTIVITY
+
+* Estimating common dispersion.
+
+        expr<- estimateCommonDisp(expr)
+
+* Estimating tagwise dispersion.
+
+        expr<- estimateCommonDisp(expr)
+
+        levels(expr $samples$group)
+
+* Exact test to calculate logFC, logCPM and PValue for every gene.
+
+        et <- exactTest(expr, pair=c("A","I"))
+
+        et
+
+* Correct for multiple testing.
+
+        p <- et$table$PValue
+
+        p_FDR <- p.adjust(p, method = c("fdr"), n = length(p))
+
+        print(length(p_FDR))
+
+        table_de <- et$table
+
+        table_de$Padj <- p_FDR
+
+* Print results to a new file.
+
+        filename = paste("~/Desktop/Wing-bias-fdr.txt")
+
+        print(filename)
+
+        write.table(table_de, file=filename,quote=F, sep="\t")
 	
-filename = paste("~/Desktop/Sex-bias-fdr",A,B,name, sep="-")
-print(filename)
-write.table(table_de, file=filename,quote=F, sep="\t")
-}
+* Identify differentially expressed genes between I and A.
 
----
+Normally, we use a fdr p-value threshold < 0.05. It is also important to consider imposing a fold change threshold eg logFC of 1. As we conducted `exactTest(expr, pair=c("A","I"))`, positive logFC means I > A (I-biased), negative logFC means A > I (A-biased).
 
-## 4. Visualisation of gene expression
+I-biased
 
+	print(length(which(table_de$Padj < 0.05 & table_de$logFC > 1)))
+	
+	table_de[which(table_de$Padj < 0.05 & table_de$logFC > 1),]
+
+A-biased
+	
+	print(length(which(table_de$Padj < 0.05 & table_de$logFC < -1)))
+	
+	table_de[which(table_de$Padj < 0.05 & table_de$logFC < -1),]
+	
+* Lets look up and check whether any of these differentially expressed genes are annotated, and find out gene features. A note of caution here, the *Heliconius melpomene* is not well annotated relative to genomes of model species.
+
+	First, look up the gene in the gtf file to identify its annotated gene name. eg
+	
+		grep "XLOC_004209" /fastdata/bo1aewr/align/Cufflinks_output/merged_asm/merged_allstranded.gtf
+	
+	Then find the Ensembl gene id. This specified in the `oId` flag and starts with HMEL... eg
+	
+		HMEL036870g1.t1
+	
+	Look up the gene id in [Lepbase](http://ensembl.lepbase.org/Heliconius_melpomene_melpomene_hmel2/Info/Index). You need to drop the transcript info from the gene name eg
+		
+		HMEL036870g1
+	
+	What information can you find out about the gene? Does it have any orthologs and if so can you infer the function of this gene?
+	
 ---
