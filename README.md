@@ -82,8 +82,8 @@ Extract read counts with htseq-count(https://htseq.readthedocs.io/en/release_0.1
 	
 * Check that the BAM file is sorted, and if so whether it is sorted by read name or by alignment position. You need to know this for htseq-count.
         
-       	qrsh 
-        
+        qrsh
+	
         source /usr/local/extras/Genomics/.bashrc
 
         samtools view -H 96I.bam | head
