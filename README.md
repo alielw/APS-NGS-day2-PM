@@ -10,7 +10,11 @@ The aim of this practical is to learn how to perform differential gene expressio
 
 1. Obtaining expression values
 
-2. Normalisation of gene expression
+2. Introduction to edgeR
+
+3. Filter expression data
+
+4. Normalisation of gene expression
 
 3. Identify differentially expressed genes
 
@@ -98,43 +102,51 @@ Extract read counts with htseq-count(https://htseq.readthedocs.io/en/release_0.1
 
         cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts /fastdata/$USER/DE/htseqCounts
 
-        cd /fastdata/$USER/DE/htseqCounts
+        cd /fastdata/$USER/DE
         
 * We need to merge the read counts across samples into one file. You can do this using a custom python script. 
 
-        python /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/scripts/merge_counts.py merged_readcounts.txt
+        python /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/scripts/merge_counts.py /fastdata/$USER/DE/htseqCounts/
 	
-* How many genes are there? You can count this with Unix (`wc -l`). Remember Htseq-count calculates read counts for each gene by merging across transcripts.
+* How many genes are there? You can count this with Unix (`wc -l`) and minus one for the header. Remember Htseq-count calculates read counts for each gene by merging across transcripts.
 
-        wc -l merged_readcounts.txt
+        wc -l htseqCounts/htseq.merged.txt
         
 * The downstream analyses we will perform next in R on the desktop. Copy the merged read count file onto your desktop. You need to open a new terminal window to do this.
 
         cd Desktop
 
-        scp $USER@sharc.shef.ac.uk:/usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts/merged_readcounts.txt .
+        scp $USER@sharc.shef.ac.uk:/fastdata/$USER/DE/htseqCounts/htseq.merged.txt .
 
 ---
 
-## 2.Introduction to EdgeR
+## 2.Introduction to edgeR
 
-We will use EdgeR for the next analyses ... in R
+We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) to perform differential gene expression analyses. This is implemented in R. 
 
-        data <- read.table("~/Desktop/merged_readcounts.txt",stringsAsFactors=F,header=T, row.names=1)
+We have read count data for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions. Samples are labelled I or A. I is the part of the wing that is iridescent, A is the top part of the wing, which is called the androchonial region.
+
+![alt text](https://github.com/alielw/APS-NGS-day2-PM/blob/master/Sample_id.png)
+
+## b. PRACTICAL ACTIVITY
+
+* Lets read in the data to R.
+
+        data <- read.table("~/Desktop/htseq.merged.txt",stringsAsFactors=F,header=T, row.names=1)
 
         names(data)
 
         dim(data)
-        
-Need to specify conditions. Include a table of samples names and id.
 
-        conditions <- factor(c("APLFG","APLFG","APLFG","APLFG","APLFG","APLMG","APLMG","APLMG"))
+* We have two treatments or conditions: A and I. We need to find this information from the file header and specify it in R.
 
-Object
+        conditions <- factor(c("I","A","I","I","A","A","A","I"))
+
+* edgeR stores data in a simple list-based data object called a DGEList. This type of object is easy to use because it can be manipulated like any list in R. The function readDGE makes a DGEList object directly. If the table of counts is already available as a matrix or a data.frame, x say, then a DGEList object can be made by
 
         expr <- DGEList(counts=data,group=conditions)
         
-        $samples
+        expr$samples
 
 ---
 
