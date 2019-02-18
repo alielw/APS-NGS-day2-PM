@@ -146,11 +146,11 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
 
         expr <- DGEList(counts=data)
 
-We can add conditions at the same time:
-	
-	expr <- DGEList(counts=data, group=conditions)
-	
-	expr$samples
+* We can add conditions at the same time:
+
+        expr <- DGEList(counts=data, group=conditions)
+
+        expr$samples
 
 ---
 
