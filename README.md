@@ -112,11 +112,9 @@ Extract read counts with htseq-count(https://htseq.readthedocs.io/en/release_0.1
 
         wc -l htseqCounts/htseq.merged.txt
         
-* The downstream analyses we will perform next in R on the desktop. Copy the merged read count file onto your desktop. You need to open a new terminal window to do this.
+* The downstream analyses we will perform next in R on the desktop. Copy the merged read count file onto your desktop.
 
-        cd Desktop
-
-        scp $USER@sharc.shef.ac.uk:/fastdata/$USER/DE/htseqCounts/htseq.merged.txt .
+        /fastdata/$USER/DE/htseqCounts/htseq.merged.txt
 
 ---
 
