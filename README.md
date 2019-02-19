@@ -92,7 +92,7 @@ Extract read counts with htseq-count(https://htseq.readthedocs.io/en/release_0.1
         
         source activate htseq
 
-        htseq-count -f bam 96I.bam /fastdata/$USER/align/Cufflinks_output/merged_asm/merged.gtf -r [name/pos] > 96I.htseq 
+        htseq-count -f bam 96I.bam /fastdata/$USER/align/Cufflinks_output/merged_asm/merged_allstranded.gtf -r [name/pos] > 96I.htseq 
 
 * It is not feasible to run htseq-count on all our samples in the practical due to time contains. We have already generated read count files for all the samples. There should be 8 files, one for each sample.
 	
@@ -139,6 +139,10 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
         names(data)
 
         dim(data)
+
+* Lets load edgeR. You may need to install the package. Instructions are [here](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
+
+        library(edgeR)
 
 * We have two treatments or conditions: A and I. We need to find this information from the file header and specify it in R.
 
@@ -205,8 +209,10 @@ There are a number of ways to visualise gene expression data. Heatmaps and PCA p
 	
 * Perform clustering of expression
 
+        install.packages(pvclust)
+	
         library(pvclust)
-
+	
         bootstraps = pvclust(cpm_log, method.hclust="average", method.dist="euclidean")
 
         plot(bootstraps)
@@ -215,7 +221,13 @@ How do the samples cluster? What can you conclude about the genomic architecture
 	
 * Plot heatmap
 
+        install.packages(pvclust)
+	
         library(pheatmap)
+	
+        install.packages(colorRamps)
+
+        library(colorRamps)
 
         palette2 <-colorRamps::"matlab.like2"(n=200)
 
@@ -287,7 +299,7 @@ Normally, we use a fdr p-value threshold < 0.05. It is also important to conside
 
 	First, look up the gene in the gtf file to identify its annotated gene name. eg
 	
-		grep "XLOC_010550" /fastdata/bo1aewr/align/Cufflinks_output/merged_asm/merged_allstranded.gtf
+		grep "XLOC_010550" /fastdata/$USER/align/Cufflinks_output/merged_asm/merged_allstranded.gtf
 	
 	Then find the Ensembl gene id. This specified in the `oId` flag and starts with HMEL... eg
 	
