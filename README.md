@@ -307,4 +307,6 @@ Normally, we use a fdr p-value threshold < 0.05. It is also important to conside
 	
 	What information can you find out about the gene? Does it have any orthologs and if so can you infer the function of this gene?
 	
+	What about other genes that you identified as differentially expressed? What can you find out about these? Are there any good candidates for iridescence?
+	
 ---
