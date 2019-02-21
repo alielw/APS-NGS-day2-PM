@@ -64,7 +64,7 @@ def main():
 					gene = line.split("\t")[0]
 					count = line.split("\t")[1]
 					count_dict[gene].append(count)
-	print "Number of transcripts =", len(count_dict)
+	print "Number of genes =", len(count_dict)
 
 	#check expression data for each sample
 
