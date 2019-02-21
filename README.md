@@ -130,7 +130,7 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
 
 		if (!requireNamespace("BiocManager"))
     		install.packages("BiocManager")
-		BiocManager::install()
+		BiocManager::install("edgeR")
 
 * Lets read in the data to R.
 
