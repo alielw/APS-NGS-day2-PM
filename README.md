@@ -126,6 +126,12 @@ We have read count data for 4 individuals of *Heliconius melpomene*. For each in
 
 ## b. PRACTICAL ACTIVITY
 
+* First lets load [Bioconductor](https://www.bioconductor.org)
+
+		if (!requireNamespace("BiocManager"))
+    		install.packages("BiocManager")
+		BiocManager::install()
+
 * Lets read in the data to R.
 
         library(edgeR)
