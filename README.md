@@ -251,7 +251,7 @@ Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) 
 
 * Estimating tagwise dispersion.
 
-        expr_filtered<- estimateCommonDisp(expr_filtered)
+        expr_filtered<- estimateTagwiseDisp(expr_filtered)
 
         levels(expr_filtered$samples$group)
 
