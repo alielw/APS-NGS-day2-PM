@@ -2,7 +2,7 @@
 *Department of Animal and Plant Sciences, University of Sheffield*
 
 # Differential gene expression analyses
-#### Alison Wright, Nicola Nadeau, Victor Soria-Carrasco
+#### Alison Wright, Nicola Nadeau, Helen Hipperson
 
 The aim of this practical is to learn how to perform differential gene expression analyses. We will be using a dataset of expression data for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions. Samples are labelled I or A. I is the part of the wing that is iridescent, A is the top part of the wing, which is called the androchonial region.
 
@@ -94,17 +94,17 @@ Extract read counts with htseq-count(https://htseq.readthedocs.io/en/release_0.1
 
 * It is not feasible to run htseq-count on all our samples in the practical due to time contains. We have already generated read count files for all the samples. There should be 8 files, one for each sample.
 	
-        /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts
+        /usr/local/extras/Genomics/workshops/NGS_AdvSta_2020/NGS_data/htseqCounts
         
 * Copy the read count folder into your fastdata folder.
 
-        cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/htseqCounts /fastdata/$USER/DE/htseqCounts
+        cp -r /usr/local/extras/Genomics/workshops/NGS_AdvSta_2020/NGS_data/htseqCounts /fastdata/$USER/DE/htseqCounts
 
         cd /fastdata/$USER/DE
         
 * We need to merge the read counts across samples into one file. You can do this using a custom python script. 
 
-        python /usr/local/extras/Genomics/workshops/NGS_AdvSta_2019/NGS_data/scripts/merge_counts.py /fastdata/$USER/DE/htseqCounts/
+        python /usr/local/extras/Genomics/workshops/NGS_AdvSta_2020/NGS_data/scripts/merge_counts.py /fastdata/$USER/DE/htseqCounts/
 	
 * How many genes are there? You can count this with Unix (`wc -l`) and minus one for the header. Remember Htseq-count calculates read counts for each gene by merging across transcripts.
 
