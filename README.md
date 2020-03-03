@@ -50,7 +50,7 @@ StringTie also calculates coverage or expression of these transcripts. It calcul
 
 We have run StringTie on all samples for you. Specifically, we have StringTie output files for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions. Samples are labelled I or A. I is the part of the wing that is iridescent, A is the top part of the wing, which is called the androchonial region.
 
-![alt text](https://github.com/alielw/APS-NGS-day2-PM/blob/master/Samples.png)
+![alt text](https://github.com/alielw/APS-NGS-day2-PM/blob/master/Samples_id.png)
 
 ## Exercise
 
