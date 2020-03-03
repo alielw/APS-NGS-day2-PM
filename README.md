@@ -104,37 +104,39 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
 
 * Load R.
 
-* Now lets load [Bioconductor](https://www.bioconductor.org)
+* Load edgeR and [Bioconductor](https://www.bioconductor.org).
 
 		if (!requireNamespace("BiocManager"))
     		install.packages("BiocManager")
 		BiocManager::install("edgeR")
 
-* Lets read in the data to R.
-
         library(edgeR)
 
-        data <- read.table("~/Desktop/gene_count_matrix.csv",stringsAsFactors=F,header=T, row.names=1)
+* Read in the data to R.
+
+        data <- read.csv("~/Desktop/gene_count_matrix.csv",stringsAsFactors=F,header=T, row.names=1)
 
         names(data)
 
         dim(data)
 
-* Lets load edgeR. You may need to install the package. Instructions are [here](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
+* We have two types of samples: A and I. Find which columns corresponds to which sample from the file header.
 
-        library(edgeR)
+* Specify the order of the samples in the file by filling in the `""` below with the correct sample id (e.g "A" or "I").
 
-* We have two treatments or conditions: A and I. We need to find this information from the file header and specify it in R.
+        samples <- factor(c("","","","","","","",""))
 
-        conditions <- factor(c("I","A","I","I","A","A","A","I"))
+* Check you specified this correctly? 
+
+		samples
 
 * [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) stores data in a simple list-based data object called a `DGEList`. This type of object is easy to use because it can be manipulated like any list in R. The function readDGE makes a DGEList object directly. If the table of counts is already available as a matrix or a data.frame, x say, then a DGEList object can be made by:
 
         expr <- DGEList(counts=data)
 
-* We can add conditions at the same time:
+* We can add samples at the same time:
 
-        expr <- DGEList(counts=data, group=conditions)
+        expr <- DGEList(counts=data, group=samples)
 
         expr$samples
 
@@ -142,24 +144,28 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
 
 ## 3.Filter expression data
 
-Genes with very low counts across all samples provide little evidence for differential expression. In the biological point of view, a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important. Therefore, we need to filter genes with biologically irrelevant expression. 
+Genes with very low counts across all samples provide little evidence for differential expression. From a biological point of view, a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important. Therefore, we need to filter genes with biologically irrelevant expression. 
 
 The developers of edgeR recommend that gene is required to have a count of 5-10 in a library to be considered expressed in that library. However, users should filter with count-per-million (`CPM`) rather than filtering on the read counts directly, as the latter does not account for differences in library sizes between samples. Therefore, they recommend filtering on a CPM of 1.
 
-We can calculate count-per-million (`CPM`) using cpm(`DGEList`).
+## Exercise
+
+* We can calculate count-per-million (`CPM`) using cpm(`DGEList`).
 
         cpm_data <- cpm(expr)
-
-## c. PRACTICAL ACTIVITY
+		head(cpm_data)
 
 * Filter expression to remove lowly expressed genes. We do not want to exclude genes specific to one wing region (ie I or A-limited genes). Therefore, a sensible filtering approach is to filter genes that are not expressed > 1 CPM in at least half of the samples. We have 8 samples.
 
         keep <- rowSums(cpm(expr)>1) >=4
         expr_filtered <- expr[keep,,keep.lib.sizes=FALSE]
 
-* How many genes remain? Does this seem a sensible number of expressed genes? There are 12,669 annotated genes in the *Heliconius melpomene* reference. 
+* How many genes remain? Does this seem a sensible number of expressed genes?
+	
+		dim(expr)
+        	dim(expr_filtered)
 
-        dim(expr_filtered)
+* Try some different filtering thresholds (e.g. > 2 CPM). Does it have a big effect on the number of genes that are filtered?
 
 ## 4. Normalisation of gene expression
 
@@ -174,22 +180,23 @@ The second most important technical influence on differential expression is one 
 Variation in RNA composition can be accounted for by the calcNormFactors function. This normalizes for RNA composition by finding a set of scaling factors for the library sizes that minimize the log-fold changes between the samples for most genes. The default method for computing these scale factors uses a trimmed mean of M- values (TMM) between each pair of samples. Further information can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
 
 	expr_norm = calcNormFactors(expr_filtered)
+	expr_norm
 
 ---
 
 ## 5. Visualisation of gene expression
 
-There are a number of ways to visualise gene expression data. Heatmaps and PCA plots are widely used approaches. We will cover heatmaps today as Day 3 will explore PCA plots.
+There are a number of ways to visualise gene expression data. Heatmaps and PCA plots are widely used approaches. We will cover heatmaps today as the last session will explore PCA plots.
 
-## d. PRACTICAL ACTIVITY
+## Exercise
 
 * Calculate log CPM
 
         cpm_log <- cpm(expr_filtered, log = TRUE)
+
+* Install pvclust from the `Package Installer` in R.
 	
 * Perform clustering of expression
-
-        install.packages(pvclust)
 	
         library(pvclust)
 	
@@ -197,31 +204,23 @@ There are a number of ways to visualise gene expression data. Heatmaps and PCA p
 
         plot(bootstraps)
 
-How do the samples cluster? What can you conclude about the genomic architecture of wing iridescence? Is it likely that many or a few genes encode this phenotype?
+How do the samples cluster? What can you conclude about the genomic architecture of wing iridescence? Is it likely that many genes with small expression differences or a few genes with big expression changes encode this phenotype?
 	
 * Plot heatmap
-
-        install.packages(pvclust)
 	
         library(pheatmap)
-	
-        install.packages(colorRamps)
 
-        library(colorRamps)
-
-        palette2 <-colorRamps::"matlab.like2"(n=200)
-
-        pheatmap(cpm_log, show_colnames=T, show_rownames=F, color = palette2,clustering_distance_cols = "euclidean", clustering_method="average") 
+        pheatmap(cpm_log, show_colnames=T, show_rownames=F, clustering_distance_cols = "euclidean", clustering_method="average") 
 
 ---
 
 ## 6. Identify differentially expressed genes in a pairwise comparison
 
-Next we can use edgeR to identify differentially expressed genes between two treatments or conditions. We have a pairwise comparison between two groups. Further information about each step can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf). You can also refer for the approach that is appropriate if you have more than two treatments. 
+Next we can use edgeR to identify differentially expressed genes between the two groups of samples. We have a pairwise comparison between two groups. Further information about each step can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf). You can also find other approaches that might be more appropriate if you have more than two treatments. 
 
 Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) method for experiments with single factor. The qCML method calculates the likelihood by conditioning on the total counts for each tag, and uses pseudo counts after adjusting for library sizes. The edgeR functions `estimateCommonDisp` and `exactTest` produce a pseudo counts. We can then proceed with determining differential expression using the `exactTest` function. The exact test is based on the qCML methods. We can compute exact p-values by summing over all sums of counts that have a probability less than the probability under the null hypothesis of the observed sum of counts. The exact test for the negative binomial distribution has strong parallels with Fisher’s exact test.
 
-## e. PRACTICAL ACTIVITY
+## Exercise
 
 * Estimating common dispersion.
 
@@ -263,13 +262,13 @@ Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) 
 
 Normally, we use a fdr p-value threshold < 0.05. It is also important to consider imposing a fold change threshold eg logFC of 1. As we conducted `exactTest(expr, pair=c("A","I"))`, positive logFC means I > A (I-biased), negative logFC means A > I (A-biased).
 
-	I-biased genes
+How many genes are expressed more in the iridescent region of the wing?
 
 		print(length(which(table_de$Padj < 0.05 & table_de$logFC > 1)))
 	
 		table_de[which(table_de$Padj < 0.05 & table_de$logFC > 1),]
 
-	A-biased genes
+How many genes are expressed more in the androchonial region of the wing?
 	
 		print(length(which(table_de$Padj < 0.05 & table_de$logFC < -1)))
 	
@@ -277,21 +276,21 @@ Normally, we use a fdr p-value threshold < 0.05. It is also important to conside
 	
 * Lets look up and check whether any of these differentially expressed genes are annotated, and find out gene features. A note of caution here, the *Heliconius melpomene* is not well annotated relative to genomes of model species.
 
-	First, look up the gene in the gtf file to identify its annotated gene name. eg
-	
-		grep "XLOC_010550" /fastdata/$USER/align/Cufflinks_output/merged_asm/merged_allstranded.gtf
-	
-	Then find the Ensembl gene id. This specified in the `oId` flag and starts with HMEL... eg
-	
-		HMEL031499g1.t1
-	
-	Look up the gene id in [Lepbase](http://ensembl.lepbase.org/Heliconius_melpomene_melpomene_hmel2/Info/Index). You need to drop the transcript info from the gene name eg
-		
-		HMEL031499g1
+	Look up the gene id in [Lepbase](http://ensembl.lepbase.org/Heliconius_melpomene_melpomene_hmel2/Info/Index). You need to drop the transcript info from the gene name.
 	
 	What information can you find out about the gene? Does it have any orthologs and if so can you infer the function of this gene?
 	
 	What about other genes that you identified as differentially expressed? What can you find out about these? Are there any good candidates for iridescence?
+
+* Let's try to relax the criteria for differential expression and remove the fold change threshold.
+
+	How many genes are expressed more in the iridescent region of the wing?
+
+		print(length(which(table_de$Padj < 0.05)))
+	
+		table_de[which(table_de$Padj < 0.05),]
+
+	Do any of these genes look like good candidates for iridescence?
 	
 ---
 
