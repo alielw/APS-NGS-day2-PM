@@ -41,22 +41,20 @@ It should show something like:
 
 ## 1.Obtaining expression values
 
-Discussion of different measures of gene expression: RPKM,FPKM,CPM. Need read counts to calculate these.
+Last session, you ran StringTie to assemble transcripts. This file looks like:
 
-**Cufflinks output files: isoforms.fpkm_tracking & genes.fpkm_tracking**
-Cufflinks generates files that contain the estimated isoform or gene-level expression values as Fragments Per Kilobase of exon model per Million mapped fragments (FPKM). It is possible to use this FPKM information for an initial assessment of gene expression but expression analyses may require further processing of this data (eg normalisation). Therefore, we do not recommend conducting analyses on these raw FPKM values.
 
-Instead, we can use [HTSeq](https://htseq.readthedocs.io/en/release_0.11.1/) to extract read counts for each gene for downstream analyses.
 
-* **Sort BAM files with [Samtools](http://www.htslib.org/doc/samtools-1.0.html).**
 
-HTSeq requires BAM files to be sorted either by read name or by alignment position. 
+StringTie also calculates coverage or expression of these transcripts. It calculates FPKM, which is Fragments Per Kilobase of exon model per Million mapped fragments. It is possible to use this FPKM information for an initial assessment of gene expression but expression analyses may require further processing of this data (eg normalisation). Therefore, we do not recommend conducting analyses on these raw FPKM values. Instead, we need to extract read counts for each gene for downstream analyses.
 
-        >samtools sort file.bam - o file.sorted.bam
+We have run StringTie on all samples for you. Specifically, we have StringTie output files for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions. Samples are labelled I or A. I is the part of the wing that is iridescent, A is the top part of the wing, which is called the androchonial region.
 
-The default sort is by coordinate. However, you can use the sort order (SO) flag in the BAM header to check if the file has been sorted. 
+![alt text](https://github.com/alielw/APS-NGS-day2-PM/blob/master/Samples.png)
 
-        >samtools view -H file.bam | head
+## Exercise
+
+
 
 * **Extract read counts.**
 
