@@ -177,10 +177,26 @@ The most obvious technical factor that affects the read counts, other than gene 
 * **RNA composition**
 The second most important technical influence on differential expression is one that is RNA composition. RNA-seq provides a measure of the relative abundance of each gene in each RNA sample, but does not provide any measure of the total RNA output on a per-cell basis. This commonly becomes important when a small number of genes are very highly expressed in one sample, but not in another. The highly expressed genes can consume a substantial proportion of the total library size, causing the remaining genes to be under-sampled in that sample. Unless this RNA composition effect is adjusted for, the remaining genes may falsely appear to be down-regulated in that sample. This is normally a problem for cross-species comparisons. 
 
-Variation in RNA composition can be accounted for by the calcNormFactors function. This normalizes for RNA composition by finding a set of scaling factors for the library sizes that minimize the log-fold changes between the samples for most genes. The default method for computing these scale factors uses a trimmed mean of M- values (TMM) between each pair of samples. Further information can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
+## Exercise
 
-	expr_norm = calcNormFactors(expr_filtered)
-	expr_norm
+* Variation in RNA composition can be accounted for by the calcNormFactors function. This normalizes for RNA composition by finding a set of scaling factors for the library sizes that minimize the log-fold changes between the samples for most genes. The default method for computing these scale factors uses a trimmed mean of M- values (TMM) between each pair of samples. Further information can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
+
+		expr_norm = calcNormFactors(expr_filtered)
+		expr_norm
+
+* Let's check that the normalisation has worked correctly. If so, each sample should have similar read counts.
+
+		cpm_log <- cpm(expr_filtered, log = TRUE)
+		plot(density((cpm_log[,1])), col="red")
+		lines(density((cpm_log[,2])), col="red")
+		lines(density((cpm_log[,3])), col="red")
+		lines(density((cpm_log[,4])), col="red")
+		lines(density((cpm_log[,5])), col="red")
+		lines(density((cpm_log[,6])), col="blue")
+		lines(density((cpm_log[,7])), col="blue")
+		lines(density((cpm_log[,8])), col="blue")
+
+* Do the graphs look as you would expect? Are there similar read counts across samples?
 
 ---
 
@@ -282,13 +298,9 @@ How many genes are expressed more in the androchonial region of the wing?
 	
 	What about other genes that you identified as differentially expressed? What can you find out about these? Are there any good candidates for iridescence?
 
-* Let's try to relax the criteria for differential expression and remove the fold change threshold.
+* Let's try to relax the criteria for differential expression and remove the fold change threshold. (HINT: you can tweak the above commands to do this).
 
 	How many genes are expressed more in the iridescent region of the wing?
-
-		print(length(which(table_de$Padj < 0.05)))
-	
-		table_de[which(table_de$Padj < 0.05),]
 
 	Do any of these genes look like good candidates for iridescence?
 	
