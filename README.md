@@ -88,7 +88,7 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 		cd /fastdata/$USER/3.DE/StringTie_output/
 		head -100 gene_count_matrix.csv
 
-How many columns are there? Is this what you expect? Can you identify any genes by eye that look to be differentially expressed between I and A samples?
+* How many columns are there? Is this what you expect? Can you identify any genes by eye that look to be differentially expressed between I and A samples?
 
 * Pick a gene, how many transcripts does this gene have? Are they all expressed? (HINT: You can look up the gene id using `grep` in the `transcript_count_matrix.csv` file).
 
