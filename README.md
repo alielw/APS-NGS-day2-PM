@@ -187,6 +187,7 @@ The second most important technical influence on differential expression is one 
 * Let's check that the normalisation has worked correctly. If so, each sample should have similar read counts.
 
 		cpm_log <- cpm(expr_filtered, log = TRUE)
+		
 		plot(density((cpm_log[,1])), col="red")
 		lines(density((cpm_log[,2])), col="red")
 		lines(density((cpm_log[,3])), col="red")
