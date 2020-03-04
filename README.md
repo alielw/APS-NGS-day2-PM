@@ -186,7 +186,7 @@ The second most important technical influence on differential expression is one 
 
 * Let's check that the normalisation has worked correctly. If so, each sample should have similar read counts.
 
-		cpm_log <- cpm(expr_filtered, log = TRUE)
+		cpm_log <- cpm(expr_norm, log = TRUE)
 		
 		plot(density((cpm_log[,1])), col="red")
 		lines(density((cpm_log[,2])), col="red")
@@ -209,7 +209,7 @@ There are a number of ways to visualise gene expression data. Heatmaps and PCA p
 
 * Calculate log CPM
 
-        cpm_log <- cpm(expr_filtered, log = TRUE)
+        cpm_log <- cpm(expr_norm, log = TRUE)
 
 * Install pvclust from the `Package Installer` in R.
 	
@@ -241,7 +241,7 @@ Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) 
 
 * Estimating common dispersion.
 
-        expr_filtered<- estimateCommonDisp(expr_filtered)
+        expr_filtered<- estimateCommonDisp(expr_norm)
 
 * Estimating tagwise dispersion.
 
