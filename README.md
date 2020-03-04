@@ -71,7 +71,9 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 		cd StringTie_output
 		for i in *.gtf; do echo ${i:0:3} `pwd`/$i; done
 
-* Make a new file (called `StringTie_filenames.txt`) using `nano` and copy the above output into this new file.
+* Now, let's save these names and paths into a new file called `StringTie_filenames.txt`
+
+		for i in *.gtf; do echo ${i:0:3} `pwd`/$i; done > StringTie_filenames.txt
 
 * Check how many lines are in `StringTie_filenames.txt` using `wc -l`. Is it what you expect?
 		
@@ -79,7 +81,7 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 
 		cp /usr/local/extras/Genomics/workshops/NGS_AdvSta_2020/NGS_data/prep_DE.py /fastdata/$USER/3.DE
 		
-* Let's now run `prep_DE.py` to extract raw read counts. This will generate generates two CSV files containing the count matrices for genes and transcripts.
+* Let's now run this python script to extract raw read counts. This will generate generates two CSV files containing the count matrices for genes and transcripts. The parameter `-i` is specifying a text file containing a list of paths to GTF files, `-g` is where to output the gene count matrix and `-t` is where to output the transcript count matrix.
 
 		python prep_DE.py -i /fastdata/$USER/3.DE/StringTie_output/StringTie_filenames.txt -g /fastdata/$USER/3.DE/StringTie_output/gene_count_matrix.csv -t /fastdata/$USER/3.DE/StringTie_output/transcript_count_matrix.csv -s HMEL
 
@@ -88,7 +90,7 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 		cd /fastdata/$USER/3.DE/StringTie_output/
 		head -100 gene_count_matrix.csv
 
-* How many columns are there? Is this what you expect? Can you identify any genes by eye that look to be differentially expressed between I and A samples?
+* How many columns are there? Is this what you expect? What is each column? Can you identify any genes by eye that look to be differentially expressed between I and A samples?
 
 * Pick a gene, how many transcripts does this gene have? Are they all expressed? (HINT: You can look up the gene id using `grep` in the `transcript_count_matrix.csv` file).
 
@@ -104,31 +106,29 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
 
 * Load R.
 
-* Load edgeR and [Bioconductor](https://www.bioconductor.org).
+* Install the [Bioconductor](https://www.bioconductor.org) package.
 
-		if (!requireNamespace("BiocManager"))
-    		install.packages("BiocManager")
-		BiocManager::install("edgeR")
+* Load the edgeR library
 
         library(edgeR)
 
 * Read in the data to R.
 
-        data <- read.csv("~/Desktop/gene_count_matrix.csv",stringsAsFactors=F,header=T, row.names=1)
+        data <- read.csv("~/gene_count_matrix.csv",stringsAsFactors=F,header=T, row.names=1)
 
         names(data)
 
         dim(data)
 
-* We have two types of samples: A and I. Find which columns corresponds to which sample from the file header.
+* We have two treatments or conditions: A and I. Find which samples correspond to which treatment from the file header.
 
-* Specify the order of the samples in the file by filling in the `""` below with the correct sample id (e.g "A" or "I").
+* Specify the order of the treatments in the file by filling in the `""` below (e.g "A" or "I").
 
-        samples <- factor(c("","","","","","","",""))
+        treatment <- factor(c("","","","","","","",""))
 
 * Check you specified this correctly? 
 
-		samples
+		treatment
 
 * [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) stores data in a simple list-based data object called a `DGEList`. This type of object is easy to use because it can be manipulated like any list in R. The function readDGE makes a DGEList object directly. If the table of counts is already available as a matrix or a data.frame, x say, then a DGEList object can be made by:
 
@@ -136,7 +136,7 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
 
 * We can add samples at the same time:
 
-        expr <- DGEList(counts=data, group=samples)
+        expr <- DGEList(counts=data, group=treatment)
 
         expr$samples
 
