@@ -241,17 +241,17 @@ Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) 
 
 * Estimating common dispersion.
 
-        expr_filtered<- estimateCommonDisp(expr_norm)
+        expr_filtered_norm<- estimateCommonDisp(expr_norm)
 
 * Estimating tagwise dispersion.
 
-        expr_filtered<- estimateTagwiseDisp(expr_filtered)
+        expr_filtered_norm<- estimateTagwiseDisp(expr_filtered_norm)
 
-        levels(expr_filtered$samples$group)
+        levels(expr_filtered_norm$samples$group)
 
 * Exact test to calculate logFC, logCPM and PValue for every gene.
 
-        et <- exactTest(expr_filtered, pair=c("A","I"))
+        et <- exactTest(expr_filtered_norm, pair=c("A","I"))
 
         et
 
