@@ -1,6 +1,5 @@
 **_Advanced Data Analysis - Introduction to NGS data analysis_**<br>
 *Department of Animal and Plant Sciences, University of Sheffield*
-https://github.com/visoca/AdvDataAna-introNGS
 
 # Differential gene expression analyses
 #### Alison Wright, Nicola Nadeau
