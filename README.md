@@ -82,6 +82,8 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 		
 * Let's now run this python script to extract raw read counts. This will generate generates two CSV files containing the count matrices for genes and transcripts. The parameter `-i` is specifying a text file containing a list of paths to GTF files, `-g` is where to output the gene count matrix and `-t` is where to output the transcript count matrix.
 
+		cd /fastdata/$USER/3.DE
+
 		python prep_DE.py -i /fastdata/$USER/3.DE/StringTie_output/StringTie_filenames.txt -g /fastdata/$USER/3.DE/StringTie_output/gene_count_matrix.csv -t /fastdata/$USER/3.DE/StringTie_output/transcript_count_matrix.csv -s HMEL
 
 * Let's look at a bit of the `gene_count_matrix.csv` file. 
