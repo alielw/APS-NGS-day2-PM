@@ -98,11 +98,9 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 
 ---
 
-## PRACTICAL - 2.Introduction to edgeR
+## PRACTICAL - 2. Introduction to edgeR
 
 We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) to perform differential gene expression analyses. This is implemented in R on your Desktop.
-
-## Exercise
 
 * Load R.
 
@@ -142,7 +140,7 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
 
 ---
 
-## PRACTICAL - 3.Filter expression data
+## PRACTICAL - 3. Filter expression data
 
 Genes with very low counts across all samples provide little evidence for differential expression. From a biological point of view, a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important. Therefore, we need to filter genes with biologically irrelevant expression. 
 
