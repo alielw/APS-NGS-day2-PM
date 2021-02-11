@@ -23,7 +23,7 @@ The aim of this practical is to learn how to perform differential gene expressio
 
 ---
 
-## Initial set up
+## PRACTICAL - Initial set up
 First of all, this tutorial must be run using an interactive session in ShARC. You will also submit jobs to ShARC. For that, you should log in into ShARC with `ssh`, and then request an interactive session with `qrsh`. Your shell prompt should show `sharc-nodeXXX` (XXX being a number between 001 and 172) and not `@sharc-login1` nor `@sharc-login2`.
 
 For this particular tutorial, we are going to create and work on a directory called `DE` in your /fastdata/$USER directory:
@@ -40,7 +40,7 @@ It should show something like:
 
 ---
 
-## 1.Obtaining expression values
+## READ - 1.Obtaining expression values
 
 Last session, you ran StringTie on one sample to assemble transcripts. This generated two files `gene_abund` and `gtf`. The `gene_abund` file should look similar to this:
 
@@ -56,7 +56,7 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 
 ![alt text](https://github.com/alielw/APS-NGS-day2-PM/blob/master/Samples_id.png)
 
-## Exercise
+## PRACTICAL - 1.Obtaining expression values
 
 * First let's download the StringTie output files.
 
@@ -98,7 +98,7 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 
 ---
 
-## 2.Introduction to edgeR
+## PRACTICAL - 2.Introduction to edgeR
 
 We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) to perform differential gene expression analyses. This is implemented in R on your Desktop.
 
@@ -142,13 +142,11 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
 
 ---
 
-## 3.Filter expression data
+## PRACTICAL - 3.Filter expression data
 
 Genes with very low counts across all samples provide little evidence for differential expression. From a biological point of view, a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important. Therefore, we need to filter genes with biologically irrelevant expression. 
 
 The developers of edgeR recommend that gene is required to have a count of 5-10 in a library to be considered expressed in that library. However, users should filter with count-per-million (`CPM`) rather than filtering on the read counts directly, as the latter does not account for differences in library sizes between samples. Therefore, they recommend filtering on a CPM of 1.
-
-## Exercise
 
 * We can calculate count-per-million (`CPM`) using cpm(`DGEList`).
 
@@ -167,7 +165,7 @@ The developers of edgeR recommend that gene is required to have a count of 5-10 
 
 * Try some different filtering thresholds (e.g. > 2 CPM). Does it have a big effect on the number of genes that are filtered?
 
-## 4. Normalisation of gene expression
+## READ - 4. Normalisation of gene expression
 
 We need to normalise gene expression across samples before conducting differential gene expression analyses. There are a number of sources of variation we need to account for.
 
@@ -177,7 +175,7 @@ The most obvious technical factor that affects the read counts, other than gene 
 * **RNA composition**
 The second most important technical influence on differential expression is one that is RNA composition. RNA-seq provides a measure of the relative abundance of each gene in each RNA sample, but does not provide any measure of the total RNA output on a per-cell basis. This commonly becomes important when a small number of genes are very highly expressed in one sample, but not in another. The highly expressed genes can consume a substantial proportion of the total library size, causing the remaining genes to be under-sampled in that sample. Unless this RNA composition effect is adjusted for, the remaining genes may falsely appear to be down-regulated in that sample. This is normally a problem for cross-species comparisons. 
 
-## Exercise
+## PRACTICAL - 4. Normalisation of gene expression
 
 * Variation in RNA composition can be accounted for by the calcNormFactors function. This normalizes for RNA composition by finding a set of scaling factors for the library sizes that minimize the log-fold changes between the samples for most genes. The default method for computing these scale factors uses a trimmed mean of M- values (TMM) between each pair of samples. Further information can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) 
 
@@ -201,11 +199,9 @@ The second most important technical influence on differential expression is one 
 
 ---
 
-## 5. Visualisation of gene expression
+## PRACTICAL - 5. Visualisation of gene expression
 
-There are a number of ways to visualise gene expression data. Heatmaps and PCA plots are widely used approaches. We will cover heatmaps today as the last session will explore PCA plots.
-
-## Exercise
+There are a number of ways to visualise gene expression data. Heatmaps and PCA plots are widely used approaches. We will cover heatmaps today.
 
 * Calculate log CPM
 
@@ -231,13 +227,11 @@ How do the samples cluster? What can you conclude about the genomic architecture
 
 ---
 
-## 6. Identify differentially expressed genes in a pairwise comparison
+## PRACTICAL - 6. Identify differentially expressed genes in a pairwise comparison
 
 Next we can use edgeR to identify differentially expressed genes between the two groups of samples. We have a pairwise comparison between two groups. Further information about each step can be found in the [edgeR manual](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf). You can also find other approaches that might be more appropriate if you have more than two treatments. 
 
 Briefly, edgeR uses the quantile-adjusted conditional maximum likelihood (qCML) method for experiments with single factor. The qCML method calculates the likelihood by conditioning on the total counts for each tag, and uses pseudo counts after adjusting for library sizes. The edgeR functions `estimateCommonDisp` and `exactTest` produce a pseudo counts. We can then proceed with determining differential expression using the `exactTest` function. The exact test is based on the qCML methods. We can compute exact p-values by summing over all sums of counts that have a probability less than the probability under the null hypothesis of the observed sum of counts. The exact test for the negative binomial distribution has strong parallels with Fisher’s exact test.
-
-## Exercise
 
 * Estimating common dispersion.
 
