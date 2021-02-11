@@ -40,7 +40,7 @@ It should show something like:
 
 ---
 
-## READ - 1.Obtaining expression values
+## READ - 1. Obtaining expression values
 
 Last session, you ran StringTie on one sample to assemble transcripts. This generated two files `gene_abund` and `gtf`. The `gene_abund` file should look similar to this:
 
@@ -56,7 +56,7 @@ We have run StringTie on all samples for you. Specifically, we have StringTie ou
 
 ![alt text](https://github.com/alielw/APS-NGS-day2-PM/blob/master/Samples_id.png)
 
-## PRACTICAL - 1.Obtaining expression values
+## PRACTICAL - 1. Obtaining expression values
 
 * First let's download the StringTie output files.
 
