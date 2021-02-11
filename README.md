@@ -298,4 +298,4 @@ How many genes are expressed more in the androchonial region of the wing?
 	
 ---
 
-Return to main course page: https://github.com/visoca/AdvDataAna-introNGS
+Return to the main course page: https://github.com/njnadeau/AdvDataAna-introNGS
