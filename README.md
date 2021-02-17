@@ -41,19 +41,15 @@ It should show something like:
 
 ## READ - 1. Obtaining expression values
 
-Last session, you ran StringTie on one sample to assemble transcripts. This generated two files `gene_abund` and `gtf`. The `gene_abund` file should look similar to this:
+Last session, you ran StringTie on one sample to assemble transcripts. This generated two files `gene_abund` and `gtf`. A `gene_abund` file looks like this:
 
 ![alt text](https://github.com/alielw/APS-NGS-day2-PM/blob/master/StringTie.png)
 
 As you can see, StringTie also calculates coverage or expression of these transcripts. It calculates FPKM, which is Fragments Per Kilobase of exon model per Million mapped fragments. It is possible to use this FPKM information for an initial assessment of gene expression but expression analyses may require further processing of this data (eg normalisation). Therefore, we do not recommend conducting analyses on these raw FPKM values. Instead, we need to extract read counts for each gene for downstream analyses.
 
-The `gtf` file should look similar to this and containing information on the physical location of each transcript.
+A `gtf` file slooks like this and contains information on the physical location of each transcript.
 
 ![alt_test](https://github.com/alielw/APS-NGS-day2-PM/blob/master/gtf.png)
-
-You can check your `gtf` file using the command below. The format should be similar to above.
-
-	head 61A.trim_StringTie.gtf
 
 We have run StringTie on all samples for you. Specifically, we have StringTie output files for 4 individuals of *Heliconius melpomene*. For each individual, two different wing regions have been sequenced. We will try to identify genes that are differentially expressed between wing regions. Samples are labelled I or A. I is the part of the wing that is iridescent, A is the top part of the wing, which is called the androchonial region.
 
