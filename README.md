@@ -49,6 +49,8 @@ Last session, you ran StringTie on one sample to assemble transcripts. This gene
 
 As you can see, StringTie also calculates coverage or expression of these transcripts. It calculates FPKM, which is Fragments Per Kilobase of exon model per Million mapped fragments. It is possible to use this FPKM information for an initial assessment of gene expression but expression analyses may require further processing of this data (eg normalisation). Therefore, we do not recommend conducting analyses on these raw FPKM values. Instead, we need to extract read counts for each gene for downstream analyses.
 
+Link to [BLOG](https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/) explaining difference between FPKM and TPM.
+
 A `gtf` file slooks like this and contains information on the physical location of each transcript.
 
 ![alt_test](https://github.com/alielw/APS-NGS-day2-PM/blob/master/gtf.png)
