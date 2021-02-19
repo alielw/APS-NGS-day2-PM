@@ -136,7 +136,7 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
 
 * Read in the data to R.
 
-        data <- read.csv("~/gene_count_matrix.csv",stringsAsFactors=F,header=T, row.names=1)
+        data <- read.csv("~/Desktop/gene_count_matrix.csv",stringsAsFactors=F,header=T, row.names=1)
 
         names(data)
 
