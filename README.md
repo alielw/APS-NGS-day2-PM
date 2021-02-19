@@ -117,7 +117,7 @@ You can check a `gtf` file using the command below. The format should be similar
 If you are using mac, you need to open a new terminal window. If you use the following commands in this new window, your file will download onto your desktop.
 
 	cd Desktop
-	scp $USER@sharc.sheffield.ac.uk:/fastdata/bo1aewr/3.DE/StringTie_output/gene_count_matrix.csv .
+	scp $USER@sharc.sheffield.ac.uk:/fastdata/$USER/3.DE/StringTie_output/gene_count_matrix.csv .
 
 
 ---
