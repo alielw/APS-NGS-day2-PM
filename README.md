@@ -25,6 +25,8 @@ The aim of this practical is to learn how to perform differential gene expressio
 ## PRACTICAL - Initial set up
 First of all, this tutorial must be run using an interactive session in ShARC. You will also submit jobs to ShARC. For that, you should log in into ShARC with `ssh`, and then request an interactive session with `qrsh`. Your shell prompt should show `sharc-nodeXXX` (XXX being a number between 001 and 172) and not `@sharc-login1` nor `@sharc-login2`.
 
+	qrsh
+
 For this particular tutorial, we are going to create and work on a directory called `DE` in your /fastdata/$USER directory:
 
         cd /fastdata/$USER
