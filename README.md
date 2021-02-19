@@ -141,6 +141,8 @@ We will use [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edg
         names(data)
 
         dim(data)
+	
+		head(data)
 
 * We have two treatments or conditions: A and I. Find which samples correspond to which treatment from the file header.
 
